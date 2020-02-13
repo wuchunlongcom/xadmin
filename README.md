@@ -1,5 +1,5 @@
-# xadmin  部署正常  ???
-python 版本: 3.7.5  django版本: 2.2.6  linux
+# xadmin  部署正常  
+python 版本: 3.7.5  django版本: 2.2.6  Bootstrap3
 
 ## 修改BUG记录
 ```
