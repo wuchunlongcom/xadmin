@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'django_cleanup.apps.CleanupConfig', # 删除记录同时删除上传的文件
     'xadmin',
     # django-crispy-forms DRY 美化form表单
     'crispy_forms',

@@ -46,7 +46,7 @@ if __name__ == "__main__":
     USER_NUM = 10
     for i in range(USER_NUM):
         user = User.objects.create_user('wj%s' % i, 'wj%s@test.com' % i,'123')
-        user.is_staff = True # 允许登录后台
+        user.is_staff = True # 允许登录后台, 默认user.is_staff = False
         user.is_superuser = False  # 超级管理员
         user.groups.add(operatorGroup) # 用户添加组
         user.save()          

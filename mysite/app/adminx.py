@@ -350,17 +350,19 @@ class HostAdmin(object):
     
 
     
-    # 定义图表
+    # 定义图表 柱状
     # title : 图表的显示名称
     # x-field : 图表的 X 轴数据列, 一般是日期, 时间等
     # y-field : 图表的 Y 轴数据列, 该项是一个 list, 可以同时设定多个列, 这样多个列的数据会在同一个图表中显示
+    # "series": {"bars": {"align": "center", "barWidth": 0.8, 'show': True}}, 启用：柱状图；屏蔽：连线图
     # order : 排序信息, 如果不写则使用数据列表的排序
     data_charts = {
-        "host_service_type_counts": {'title': "Host service type count", "x-field": "service_type",
+        "host_service_type_abc": {'title': "Host service type count", # "host_service_type_abc" 可以随便写
+                                     "x-field": "service_type",
                                      "y-field": ("service_type",),
                                      "option": {
-                                         "series": {"bars": {"align": "center", "barWidth": 0.8, 'show': True}},
-                                         "xaxis": {"aggregate": "count", "mode": "categories"},
+                                        "series": {"bars": {"align": "center", "barWidth": 0.8, 'show': True}},
+                                        "xaxis": {"aggregate": "count", "mode": "categories"},
                                      },
                                      },
     }
@@ -430,6 +432,13 @@ class AccessRecordAdmin(object):
     refresh_times = (3, 5, 10)
     model_icon = "fa fa-question"
     
+    # 访问记录 图表
+    # title : 图表的显示名称
+    # x-field : 图表的 X 轴数据列, 一般是日期, 时间等
+    # y-field : 图表的 Y 轴数据列, 该项是一个 list, 可以同时设定多个列, 这样多个列的数据会在同一个图表中显示
+    # "series": {"bars": {"align": "center", "barWidth": 0.8, 'show': True}}, 启用：柱状图；屏蔽：连线图
+    # order : 排序信息, 如果不写则使用数据列表的排序
+
     data_charts = {
         "user_count": {'title': "User Report", "x-field": "date", "y-field": ("user_count", "view_count"),
                        "order": ('date',)},
@@ -519,7 +528,7 @@ class SchoolResource(resources.ModelResource):
 
 #创建注册类     
 class SchoolAdmin(object):
-    
+    # 实现变量传递到前端
     def num_span(self, instance):
         # 小于阀值，显示红色
         num = Threshold.objects.filter(id=2).first().num
@@ -555,8 +564,9 @@ xadmin.site.register(School, SchoolAdmin)
 
 class TestAdmin(object):
     """ 自定义页面 """
+ 
     
-    list_display = []
+    # 如何将变量传递到前端？
     object_list_template = "my-define/demo-test.html" 
     model_icon = "fa fa-diamond"   
     
