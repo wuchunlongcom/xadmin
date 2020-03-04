@@ -12,10 +12,10 @@ function logging {
 }
 
 function build_venv {
-    if [ ! -d env375 ]; then
-        virtualenv env375
+    if [ ! -d env ]; then
+        virtualenv env
     fi
-    . env375/bin/activate
+    . env/bin/activate
 
     pip3 install -r requirements.txt
 }
@@ -37,6 +37,7 @@ function rebuild_db {
 
 function launch_webapp {
     cd ${BASE_DIR}/mysite
+    python "manage.py" "crontab" "add" # add
     python "manage.py" "runserver"
 }
 

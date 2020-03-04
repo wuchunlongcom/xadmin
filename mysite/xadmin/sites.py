@@ -152,7 +152,7 @@ class AdminSite(object):
         关于 Admin View 具体内容可以参看 :class:`~xadmin.views.base.BaseAdminView`。 举例::
 
             from xadmin.views import BaseAdminView
-
+            from xadmin.sites import site
             class TestAdminView(BaseAdminView):
                 
                 def get(self, request):

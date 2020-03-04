@@ -27,6 +27,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    'django_crontab',
+    'myAPI.apps.MyAPIConfig',
     'django_cleanup.apps.CleanupConfig', # 删除记录同时删除上传的文件
     'xadmin',
     # django-crispy-forms DRY 美化form表单
@@ -147,6 +149,17 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOCALE_PATHS = (
     os.path.join(os.path.dirname(BASE_DIR), 'xadmin', 'locale'),
 )
+
+CRONJOBS = [
+    #('*/1 * * * *', 'app.cron.work', '>>/tmp/mytest.log')
+    ('* * * * *', 'app.cron.work'),
+    ('* * * * * sleep 10', 'app.cron.work'),
+    ('* * * * * sleep 20', 'app.cron.work'),
+    ('* * * * * sleep 30', 'app.cron.work'),
+    ('* * * * * sleep 40', 'app.cron.work'),
+    ('* * * * * sleep 50', 'app.cron.work')
+]
+
 
 # print(LOCALE_PATHS)
 

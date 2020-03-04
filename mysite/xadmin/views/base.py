@@ -724,7 +724,7 @@ class ModelAdminView(CommAdminView):
     ModelAdminView 注册时使用 :meth:`xadmin.sites.AdminSite.register_modelview` 方法注册，具体使用实例可以参见该方法的说明，或参考实例::
 
         from xadmin.views import ModelAdminView
-
+        from xadmin.sites import site
         class TestModelAdminView(ModelAdminView):
             
             def get(self, request, obj_id):

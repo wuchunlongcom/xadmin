@@ -1,4 +1,5 @@
 from __future__ import absolute_import
+
 import xadmin
 from xadmin import views
 from xadmin.models import UserWidget
@@ -10,7 +11,7 @@ from xadmin.filters import MultiSelectFieldListFilter
 from xadmin.plugins.actions import BaseActionView
 
 from django.http import HttpResponse
-
+from django.shortcuts import render
 
 @xadmin.sites.register(views.website.IndexView)
 class MainDashboard(object):
@@ -475,7 +476,7 @@ class AccessRecordAdmin(object):
 
 from django.apps import apps
 from import_export import resources
-from .models import School, Threshold, Test
+from .models import School, Threshold, CustomPage
 class SchoolResource(resources.ModelResource):
     
     def __init__(self):
@@ -526,23 +527,24 @@ class SchoolResource(resources.ModelResource):
         
 #add
 
-#创建注册类     
+#创建注册类
+@xadmin.sites.register(School)     
 class SchoolAdmin(object):
-    # 实现变量传递到前端
-    def num_span(self, instance):
-        # 小于阀值，显示红色
-        num = Threshold.objects.filter(id=2).first().num
-        if instance.num < num:
-            return '<span style="color:#f00">' + str(instance.num) + '</span>'  
+    # per_span变量传递到前端
+    def per_span(self, instance):
+        """ 获得阀值数据库第2条记录，小于阀值，显示红色"""
+        per = Threshold.objects.filter(id=2).first().per
+        if instance.per < per:
+            return '<span style="color:#f00"> %s </span>' %instance.per
         else:
-           return instance.num
+           return instance.per
        
-    num_span.allow_tags = True
-    num_span.short_description = "建校时间(值<25 显示红色)"    
-    num_span.is_column = True
+    per_span.allow_tags = True
+    per_span.short_description = "高考升学率(值<50 显示红色)"    
+    per_span.is_column = True
 
         
-    list_display = ('name','address','date','num_span')
+    list_display = ('name','address','date','num','per_span')
     list_editable = ['address', ]
     refresh_times = (3, 5)
     
@@ -559,15 +561,13 @@ class SchoolAdmin(object):
         'export_resource_class': SchoolResource,
     }
 
-    
-xadmin.site.register(School, SchoolAdmin)
-
-class TestAdmin(object):
-    """ 自定义页面 """
- 
-    
-    # 如何将变量传递到前端？
-    object_list_template = "my-define/demo-test.html" 
-    model_icon = "fa fa-diamond"   
-    
-xadmin.site.register(Test, TestAdmin) 
+OBJECT_TEMPLATE = "my-define/dashboard.html"
+@xadmin.sites.register(CustomPage)
+class CustomPageAdmin(object):
+    """ 自定义页面   
+    1、如何将变量传递到前端？ 单例模式，只能执行一次！
+    2、解决方案：使用定时执行任务，定时更新模板。2020.03.04
+    """    
+    object_list_template = OBJECT_TEMPLATE
+    model_icon = "fa fa-diamond"  
+     

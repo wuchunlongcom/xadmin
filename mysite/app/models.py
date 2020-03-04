@@ -141,10 +141,11 @@ class AccessRecord(models.Model):
 #add
 class School(models.Model):
  
-    name = models.CharField(max_length=50,verbose_name='学校名字')
+    name = models.CharField(max_length=32,verbose_name='学校名字')
     address = models.CharField(max_length=100,verbose_name='学校地址')
     date = models.DateTimeField(default=datetime.datetime.now, null=True, blank=True,verbose_name='添加时间')
     num = models.IntegerField(verbose_name='建校时间', blank=True, null=True)
+    per = models.IntegerField(verbose_name='高考升学率', blank=True, null=True)
     
     class Meta:
         verbose_name = '学校'
@@ -156,7 +157,7 @@ class School(models.Model):
 
 class Threshold(models.Model):
 
-    num = models.IntegerField(verbose_name='阀值', default=20)
+    per = models.IntegerField(verbose_name='阀值', default=50)
     
     class Meta:
         verbose_name='阀值'
@@ -165,10 +166,8 @@ class Threshold(models.Model):
     def __str__(self):
         return self.num   
     
-    
-    
-    
-class Test(models.Model):
+       
+class CustomPage(models.Model):
     
     class Meta:
         verbose_name = u"自定义页面"

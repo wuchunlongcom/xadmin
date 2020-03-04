@@ -1,2 +1,5 @@
 eclipse.preferences.version=1
 encoding//mysite/init-user-group-per.py=utf-8
+encoding//mysite/myAPI/apps.py=utf-8
+encoding//mysite/myAPI/fileAPI.py=utf-8
+encoding//mysite/mysite/urls.py=utf-8
