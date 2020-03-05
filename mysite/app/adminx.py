@@ -62,11 +62,34 @@ class GlobalSetting(object):
     }
     # 默认 Model 图标
     # default_model_icon = None
+    
     # View模板继承的基础模板
     # base_template = 'xadmin/base_site.html'
+    
     # 网站菜单
     menu_style = 'default'  # 'accordion'  #左侧导航条修改可折叠
 
+    # 自定义页面 自定义左边菜单 函数名称不能改
+    # 参考：https://blog.csdn.net/xuezhangjun0121/article/details/91570531?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task
+    # 存在两个问题：1、有一空白页；2、缩放按钮不起作用。
+    def get_site_menu(self):  
+        return [
+            {
+                'title': 'School',
+                'icon': 'fa fa-bar-chart-o',
+                'menus': (
+                    {
+                        'title': '自定义菜单',    
+                        'url': '/app/school/items/',     
+                        'icon': 'fa fa-flag-checkered'     
+                    },
+                          
+                )
+            }
+        ]
+
+from .views import SchoolView   
+xadmin.site.register_view(r'school/items/$', SchoolView, name='school_items')
 
 class MaintainInline(object):
     model = MaintainLog

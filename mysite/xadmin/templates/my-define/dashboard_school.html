@@ -1,6 +1,8 @@
 {% extends 'xadmin/base_site.html' %}
 {% load i18n %}
 {% block content %}
+
+
   <div class="col-md-1 content-toolbar btn-toolbar pull-right clearfix">    
     <div class="btn-group layout-btns" data-toggle="buttons-checkbox">
       <button type="button" class="btn btn-default btn-sm layout-full">
@@ -26,7 +28,7 @@
         </div>
     </div>
     <div class="col-md-6 column">
-        <div>{{ '升学率统计' }}</div>
+        <div>{{ tab|safe }}</div>
         <div style="min-height: 280px;">
           <div id="main4" style="height: 300px;"></div>
         </div>
@@ -150,7 +152,7 @@
                 }
             ]
         };
-        //var disk_usage = {{ disk_usage|safe }};
+        var name = {{ name|safe }};
         var items = {{ items|safe }}
         // 使用刚指定的配置项和数据显示图表。
         myChart.setOption(option);
@@ -163,10 +165,10 @@
             },
             series: [
                 {
-                    name: '升学率统计',
+                    name: name,
                     type: 'gauge',
                     detail: {formatter:'{value}%'},
-                    data: [{value: items, name: '已使用'}]
+                    data: [{value: items, name: '升学率'}]
                 }
             ]
         };
