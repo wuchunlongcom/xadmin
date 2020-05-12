@@ -2,7 +2,7 @@
 
 from django.urls import include, path
 from django.contrib import admin
-
+from django.contrib.auth import views as auth_views
 urlpatterns = [
     path(r'admin/', admin.site.urls),
 ]
@@ -18,7 +18,7 @@ xversion.register_models()
 
 urlpatterns += [
     path('app/',include('app.urls')),
-    
+
     path(r'', xadmin.site.urls),
    
     

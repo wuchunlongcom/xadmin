@@ -1,44 +1,12 @@
-#!/usr/bin/env python
-# encoding=utf-8
+# -*- coding: utf-8 -*-
+
 """
-数据导入、导出
-Author:zcyuefan
-Topic:django-import-export plugin for xadmin to help importing and exporting data using .csv/.xls/.../.json files
-
-Use:
-+++ settings.py +++
-INSTALLED_APPS = (
-    ...
-    'import_export',
-)
-
-+++ model.py +++
-from django.db import models
-
-class Foo(models.Model):
-    name = models.CharField(max_length=64)
-    description = models.TextField()
-
-+++ adminx.py +++
-import xadmin
-from import_export import resources
-from .models import Foo
-
-class FooResource(resources.ModelResource):
-
-    class Meta:
-        model = Foo
-        # fields = ('name', 'description',)
-        # exclude = ()
-
-
-@xadmin.sites.register(Foo)
-class FooAdmin(object):
-    import_export_args = {'import_resource_class': FooResource, 'export_resource_class': FooResource}
-
-++++++++++++++++
-More info about django-import-export please refer https://github.com/django-import-export/django-import-export
+导入、导出数据  支持中文、支持下列文件：
+导入数据: xls、xlsl、csv、tsv、 yaml、json
+导出数据：xls、xlsl、csv、tsv、 yaml、json、ods、 html 
+吴春龙 2020.05.12
 """
+
 from datetime import datetime
 from django.template import loader
 from xadmin.plugins.utils import get_context_dict
@@ -88,10 +56,9 @@ class ImportMenuPlugin(BaseAdminPlugin):
             nodes.append(loader.render_to_string('xadmin/blocks/model_list.top_toolbar.importexport.import.html',
                                                  context=context))
 
-
+# 导入数据
 class ImportBaseView(ModelAdminView):
-    """
-    """
+
     resource_class = None
     import_export_args = {}
     #: template for import view
@@ -100,11 +67,13 @@ class ImportBaseView(ModelAdminView):
     #: available import formats
     formats = DEFAULT_FORMATS
     #: import data encoding
-    from_encoding = "utf-8"
+    from_encoding = "utf-8"  
+    
+    
     skip_admin_log = None
     # storage class for saving temporary files
     tmp_storage_class = None
-
+    
     def get_skip_admin_log(self):
         if self.skip_admin_log is None:
             return SKIP_ADMIN_LOG
@@ -151,7 +120,7 @@ class ImportBaseView(ModelAdminView):
         Returns available import formats.
         """
         return [f for f in self.formats if f().can_import()]
-
+    
 
 class ImportView(ImportBaseView):
 
@@ -216,21 +185,26 @@ class ImportView(ImportBaseView):
             data = bytes()
             for chunk in import_file.chunks():
                 data += chunk
-
+            
+            # 解决csv tsv导入中文出错问题 吴春龙 2020.05.12
+            if '.csv' in import_file.name or '.tsv' in import_file.name:
+                # 将'gbk'字节包转换成'utf-8'字节包；
+                data = data.decode('gbk').encode('utf-8')
+            
             tmp_storage.save(data, input_format.get_read_mode())
 
             # then read the file, using the proper format-specific mode
             # warning, big files may exceed memory
-            try:
+            try:                
                 data = tmp_storage.read(input_format.get_read_mode())
                 if not input_format.is_binary() and self.from_encoding:
-                    data = force_text(data, self.from_encoding)
+                    data = force_text(data, self.from_encoding)               
                 dataset = input_format.create_dataset(data)
             except UnicodeDecodeError as e:
                 return HttpResponse(_(u"<h1>Imported file has a wrong encoding: %s</h1>" % e))
             except Exception as e:
                 return HttpResponse(_(u"<h1>%s encountered while trying to read file: %s</h1>" % (type(e).__name__,
-                                                                                                  import_file.name)))
+                                                                                                  import_file.name)))            
             result = resource.import_data(dataset, dry_run=True,
                                           raise_errors=False,
                                           file_name=import_file.name,
@@ -315,7 +289,7 @@ class ImportProcessView(ImportBaseView):
                           current_app=self.admin_site.name)
             return HttpResponseRedirect(url)
 
-
+# 导出数据
 class ExportMixin(object):
     #: resource class
     resource_class = None
@@ -357,14 +331,15 @@ class ExportMixin(object):
         Returns available export formats.
         """
         return [f for f in self.formats if f().can_export()]
-
+    
     def get_export_filename(self, file_format):
         date_str = datetime.now().strftime('%Y-%m-%d-%H%M%S')
+
         filename = "%s-%s.%s" % (self.opts.verbose_name.encode('utf-8'),
                                  date_str,
                                  file_format.get_extension())
         return filename
-
+    
     def get_export_queryset(self, request, context):
         """
         Returns export queryset.

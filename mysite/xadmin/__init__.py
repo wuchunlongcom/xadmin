@@ -1,4 +1,6 @@
-VERSION = (0, 6, 0)
+# -*- coding: utf-8 -*-
+
+VERSION = (2, 0, 0)
 
 from xadmin.sites import AdminSite, site
 

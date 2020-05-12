@@ -140,10 +140,10 @@ class AccessRecord(models.Model):
 
 #add
 class School(models.Model):
- 
+    """ 学校 """
     name = models.CharField(max_length=32,verbose_name='学校名字')
     address = models.CharField(max_length=100,verbose_name='学校地址')
-    date = models.DateTimeField(default=datetime.datetime.now, null=True, blank=True,verbose_name='添加时间')
+    date = models.DateTimeField(default=datetime.datetime.now, verbose_name='添加时间', null=True, blank=True)
     num = models.IntegerField(verbose_name='建校时间', blank=True, null=True)
     per = models.IntegerField(verbose_name='高考升学率', blank=True, null=True)
     
@@ -164,15 +164,23 @@ class Threshold(models.Model):
         verbose_name_plural=verbose_name
 
     def __str__(self):
-        return self.num   
+        return str(self.per)   
     
        
 class CustomPage(models.Model):
-    
+    """自定义页面，定时执行任务"""
     class Meta:
-        verbose_name = u"自定义页面"
+        verbose_name = "自定义页面，定时执行任务"
         verbose_name_plural = verbose_name
 
     def __str__(self):
         return self.Meta.verbose_name
 
+class Custom(models.Model):
+    
+    class Meta:
+        verbose_name = u"自定义页面，支持模板变量、缩放按钮"
+        verbose_name_plural = verbose_name
+
+    def __str__(self):
+        return self.Meta.verbose_name

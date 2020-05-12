@@ -63,15 +63,15 @@ class GlobalSetting(object):
     # 默认 Model 图标
     # default_model_icon = None
     
-    # View模板继承的基础模板
-    # base_template = 'xadmin/base_site.html'
+    ## View模板继承的基础模板  默认 xadmin/views/base.py  base_template = 'xadmin/base_site.html'
+    #base_template = 'xadmin/base_site.html'   
     
     # 网站菜单
     menu_style = 'default'  # 'accordion'  #左侧导航条修改可折叠
 
-    # 自定义页面 自定义左边菜单 函数名称不能改
+    # 自定义页面 自定义左边菜单 函数名称get_site_menu(self)是重写了xadmin/views/base.py class CommAdminView 中的get_site_menu(self)  不能改
     # 参考：https://blog.csdn.net/xuezhangjun0121/article/details/91570531?depth_1-utm_source=distribute.pc_relevant.none-task&utm_source=distribute.pc_relevant.none-task
-    # 存在两个问题：1、有一空白页；2、缩放按钮不起作用。
+    # 存在问题：1、缩放按钮不起作用。
     def get_site_menu(self):  
         return [
             {
@@ -79,7 +79,7 @@ class GlobalSetting(object):
                 'icon': 'fa fa-bar-chart-o',
                 'menus': (
                     {
-                        'title': '自定义菜单',    
+                        'title': '自定义菜单,缩放按钮不起作用',    
                         'url': '/app/school/items/',     
                         'icon': 'fa fa-flag-checkered'     
                     },
@@ -499,7 +499,7 @@ class AccessRecordAdmin(object):
 
 from django.apps import apps
 from import_export import resources
-from .models import School, Threshold, CustomPage
+from .models import School, Threshold, CustomPage, Custom
 class SchoolResource(resources.ModelResource):
     
     def __init__(self):
@@ -540,33 +540,45 @@ class SchoolResource(resources.ModelResource):
         
         # 对象标识的默认字段是id，您可以选择在导入时设置哪些字段用作id
         #import_id_fields = ('id',)        
-        import_id_fields = ('name','address','date','num')
-       
-        # 白名单
-        fields = ('name','address','date','num')
+        import_id_fields = ('name','address','date','num','per')
+        
+        # 导入以下字段  白名单
+        fields = ('name','address','date','num','per')
+        
         
         ## 黑名单
         #exclude = ()
         
-#add
+#add     
+
+
+@xadmin.sites.register(Threshold)     
+class ThresholdAdmin(object):
+    list_display = ('id','per')
+
 
 #创建注册类
 @xadmin.sites.register(School)     
 class SchoolAdmin(object):
     # per_span变量传递到前端
     def per_span(self, instance):
-        """ 获得阀值数据库第2条记录，小于阀值，显示红色"""
-        per = Threshold.objects.filter(id=2).first().per
-        if instance.per < per:
-            return '<span style="color:#f00"> %s </span>' %instance.per
+        """ 获得阀值数据库第首条（不是id=1）记录，小于阀值，显示红色"""
+
+        if Threshold.objects.filter().first(): # 获得首条记录
+            per = Threshold.objects.filter().first().per
         else:
-           return instance.per
+           return '未设置【阀值】'
+        
+        if instance.per:        
+            if instance.per < per:
+                return '<span style="color:#f00"> %s </span>' %instance.per # 显示红色
+            else:
+                return instance.per
        
     per_span.allow_tags = True
-    per_span.short_description = "高考升学率(值<50 显示红色)"    
+    per_span.short_description = "高考升学率(值<阀值 显示红色)"    
     per_span.is_column = True
-
-        
+       
     list_display = ('name','address','date','num','per_span')
     list_editable = ['address', ]
     refresh_times = (3, 5)
@@ -587,10 +599,40 @@ class SchoolAdmin(object):
 OBJECT_TEMPLATE = "my-define/dashboard.html"
 @xadmin.sites.register(CustomPage)
 class CustomPageAdmin(object):
-    """ 自定义页面   
-    1、如何将变量传递到前端？ 单例模式，只能执行一次！
-    2、解决方案：使用定时执行任务，定时更新模板。2020.03.04
+    """ 
+    自定义页面   
+    
+    1、定时执行任务：使用定时执行任务，定时更新模板。2020.03.04
+    备注：定时器不起作用时，应检查文件 mysite/app/statefile.txt是否存在,若存在就该删除！
     """    
-    object_list_template = OBJECT_TEMPLATE
+    object_list_template = OBJECT_TEMPLATE 
     model_icon = "fa fa-diamond"  
-     
+
+
+import json
+from xadmin.views.base import CommAdminView
+
+
+@xadmin.sites.register(Custom)
+class CustomAdmin(object):
+    """ 
+    自定义页面   
+    自定义页面，实现后台给前端传值   2020.03.29
+    """    
+    object_list_template = 'my-define/dashboard_school.html'
+
+    # 重写方法，把要展示的数据更新到 context
+    def get_context(self):
+        context = CommAdminView.get_context(self)
+
+        context = super().get_context()   # 这一步是关键
+        title = "自定义子菜单"     # 定义面包屑变量
+        context["breadcrumbs"].append({'url': '/cwyadmin/', 'title': title})   
+        context["title"] = title   
+        
+        # 从数据库获得数据，添加到context
+        items = sum(School.objects.values_list('per', flat=True))//School.objects.all().count()
+        name = '学校升学率统计'
+        context.update({'tab':name, 'name':json.dumps(name), 'items':json.dumps(items)})
+
+        return context

@@ -53,4 +53,7 @@ if [ "${OPT_ENV_FORCE}x" == "-ix" ];then
     rebuild_db
 fi
 
+logging "BASE_DIR:" ${BASE_DIR}
+python "-V"
+
 launch_webapp

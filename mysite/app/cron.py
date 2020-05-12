@@ -13,6 +13,9 @@ def dashboard_temp(mode, field, label):
     3、替换字符串；
     4、将替换过的字符串，写入到新的模板文件；
     5、读写文件，文件必须用全路径；
+    备注：
+    1、定时器不起作用时，应检查文件 mysite/app/statefile.txt是否存在,若存在就该删除！
+    2、数据库数据更新后，不能立即生效，视定时时间而定；
     """
     import os
     from .adminx import OBJECT_TEMPLATE    
@@ -23,7 +26,7 @@ def dashboard_temp(mode, field, label):
     c = mode.objects.all().count()
     items = sum(mode.objects.values_list(field, flat=True))//c if c else 0 
     
-    # print('items:', items)
+    
     if not os.path.isfile(STATEFILE):
        
         with open(STATEFILE,'w+') as f:
@@ -43,5 +46,5 @@ def dashboard_temp(mode, field, label):
         if os.path.isfile(STATEFILE): #判断文件
             os.remove(STATEFILE) 
         
-        # print('ok')    
+        #  print('ok') print在此不起作用的   
     

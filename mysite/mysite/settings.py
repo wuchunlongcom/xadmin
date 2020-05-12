@@ -27,6 +27,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    # 定时执行任务
     'django_crontab',
     'myAPI.apps.MyAPIConfig',
     'django_cleanup.apps.CleanupConfig', # 删除记录同时删除上传的文件
@@ -149,6 +150,18 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 LOCALE_PATHS = (
     os.path.join(os.path.dirname(BASE_DIR), 'xadmin', 'locale'),
 )
+
+
+# 配置邮箱发邮件的相关功能 
+EMAIL_USE_TLS= True
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #这一项是固定的
+EMAIL_HOST = 'smtp.163.com' # SMTP服务器主机 163
+EMAIL_PORT = 25 # smtp服务固定的端口是25
+EMAIL_HOST_USER = 'wcl6005@163.com' #发送邮件的邮箱
+EMAIL_HOST_PASSWORD = 'wcl6005' #在邮箱中设置的客户端授权密码
+
+DEFAULT_FROM_EMAIL = 'python<wcl6005@163.com>' #收件人看到的发件人 <此处要和发送邮件的邮箱相同>
+
 
 CRONJOBS = [
     #('*/1 * * * *', 'app.cron.work', '>>/tmp/mytest.log')
