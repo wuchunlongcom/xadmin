@@ -1,0 +1,26 @@
+#python3.7.5
+gevent
+gunicorn
+markdown2
+pymysql
+django-cleanup
+Django==2.2.6
+django-crispy-forms>=1.8.0  #1.7.2
+django-formtools==2.2
+django-import-export==1.2.0
+django-reversion>=3.0.0
+future==0.17.1
+httplib2==0.12.3
+six==1.12.0
+ilds
+xlsxwriter
+django-markdown-deux
+xlsxwriter
+tablib==0.14.0
+diff_match_patch
+xlwt
+openpyxl
+odfpy
+pyyaml
+MarkupPy
+django-crontab

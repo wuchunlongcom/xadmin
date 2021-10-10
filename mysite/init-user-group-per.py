@@ -13,13 +13,10 @@ if __name__ == "__main__":
     django.setup()
 
     from django.contrib.auth.models import User, Group, Permission    
-    from app.models import School, Threshold,CustomPage
+    from app.models import School, Threshold, CustomPage
     
-    print('start create all user and group and permission')
-            
-    
-    # 邮箱必须为真实的邮箱，xadmin登录时， 忘记了您的密码或用户名？ 找回密码用
-    
+     
+    # 邮箱必须为真实的邮箱，xadmin登录时， 忘记了您的密码或用户名？ 找回密码用    
     if not User.objects.filter(username = 'admin'): # 创建超级用户 
         User.objects.create_superuser('admin', 'wcl6005@126.com','admin')
     else:
@@ -27,7 +24,7 @@ if __name__ == "__main__":
         user.set_password('admin')
         user.save()
 
-    user = User.objects.create_user('www', 'wwwchunlong@126.com','www')  # 创建普通用户
+    user = User.objects.create_user('www', 'wwwchunlong@126.com','123')  # 创建普通用户
     user.is_staff = True # 允许登录后台，但你无权修改任何东西。 默认user.is_staff = False 不能登录后台。
     user.save()
     
@@ -62,17 +59,15 @@ if __name__ == "__main__":
         user.groups.add(operatorGroup) # 用户添加组
         user.save()          
 
-    # 创建10个普通用户,添加组customerGroup
-    USER_NUM = 10
+    # 创建2个普通用户,添加组customerGroup
+    USER_NUM = 2
     for i in range(USER_NUM):
         user = User.objects.create_user('wu%s' % i, 'wu%s@test.com' % i,'123')
         user.is_staff = True
         user.is_superuser = False
         user.groups.add(customerGroup)
         user.save()          
-    
-    print('end create all user and group and permission')
-    
+       
     
     from basedao import BaseDAO 
        
