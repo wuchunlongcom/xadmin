@@ -1,5 +1,5 @@
-# xadmin  部署正常  
-python 版本: 3.7.5  django版本: 2.2.6  xadmin2.0.0
+## xadmin  部署正常  
+python: 3.7.5 django: 2.2.6 xadmin:2.0.0 version: 2.0.0
 
 ### 功能
 ```
@@ -7,7 +7,7 @@ python 版本: 3.7.5  django版本: 2.2.6  xadmin2.0.0
 2、具有用户、组、权限功能；
 3、数据导入、导出；
 4、Echarts数据可视化；
-5、定时执行任务
+5、定时执行任务;
 ```
 
 ```
@@ -56,13 +56,11 @@ xadmin 功能测试
 
 ### 使用 xadmin
 ```
-- 您只需定义您数据的字段等信息，即可即刻获得一个功能全面的管理系统。不仅如此，您还可以方便的扩展更多的定制功能和系统界面。
+- 您只需定义您数据的字段等信息，即可即刻获得一个功能全面的管理系统。
+  不仅如此，您还可以方便的扩展更多的定制功能和系统界面。
 - 使用系统用户模型 from django.contrib.auth.models import User
 
 ```
-
-删除定时任务
-python3 mysite/manage.py crontab remove   # python3
 
 
 ## 功能
@@ -80,17 +78,22 @@ python3 mysite/manage.py crontab remove   # python3
   
 ## 文档
 - [Chinese](https://xadmin.readthedocs.org/en/latest/index.html)
-
+参考文档：
+xadmin引入django-import-export导入功能
+https://www.cnblogs.com/yjlch1016/archive/2019/08/18/11373785.html   # ok
 
 ## 在本地运行Demo
-
 ```
 ./start.sh -i
 ```
 
 http://127.0.0.1:8000
+```
+管理员:admin/admin。
+用户:（加入组）wj0/123 wj1/123; wu0/123 wu1/123
+用户:www/123
+```
 
-在浏览器中打开 [http://127.0.0.1:8000](http://127.0.0.1:8000/) ，管理员用户密码为admin/admin。
 
 ### 问题日记
 存在问题： 2020.05.08
